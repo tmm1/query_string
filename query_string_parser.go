@@ -140,7 +140,7 @@ func queryTimeFromString(yylex yyLexer, t string) (time.Time, error) {
 	return rv, nil
 }
 
-func queryStringStringToken(field, str string) bluge.Query {
+func queryStringStringToken(yylex yyLexer, field, str string) bluge.Query {
 	if strings.HasPrefix(str, "/") && strings.HasSuffix(str, "/") {
 		return bluge.NewRegexpQuery(str[1 : len(str)-1]).SetField(field)
 	} else if strings.ContainsAny(str, "*?") {

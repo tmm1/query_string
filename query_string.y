@@ -81,7 +81,7 @@ tMINUS {
 searchBase:
 tSTRING {
     yylex.(*lexerWrapper).logDebugGrammarf("STRING - %s", $1)
-	$$ = queryStringStringToken("", $1)
+	$$ = queryStringStringToken(yylex, "", $1)
 }
 |
 tSTRING tTILDE {
@@ -118,7 +118,7 @@ tPHRASE {
 |
 tSTRING tCOLON tSTRING {
 	yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s STRING - %s", $1, $3)
-	$$ = queryStringStringToken($1, $3)
+	$$ = queryStringStringToken(yylex, $1, $3)
 }
 |
 tSTRING tCOLON posOrNegNumber {
