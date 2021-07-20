@@ -420,6 +420,22 @@ func TestQuerySyntaxParserInvalid(t *testing.T) {
 	}
 }
 
+func TestQueryOptionTermFields(t *testing.T) {
+	input := "+Field:term"
+	opts := DefaultOptions().WithTermFields(map[string]bool{
+		"Field": true,
+	})
+	q, err := ParseQueryString(input, opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := bluge.NewBooleanQuery().AddMust(bluge.NewTermQuery("term").SetField("Field"))
+	if !reflect.DeepEqual(q, result) {
+		t.Errorf("Expected %#v, got %#v: for %s", result, q, input)
+	}
+
+}
+
 var extTokenTypes []int
 var extTokens []yySymType
 

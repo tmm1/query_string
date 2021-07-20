@@ -41,6 +41,7 @@ type QueryStringOptions struct {
 	debugLexer  bool
 	dateFormat  string
 	logger      *log.Logger
+	termFields  map[string]bool
 }
 
 func DefaultOptions() QueryStringOptions {
@@ -66,6 +67,11 @@ func (o QueryStringOptions) WithDateFormat(dateFormat string) QueryStringOptions
 
 func (o QueryStringOptions) WithLogger(logger *log.Logger) QueryStringOptions {
 	o.logger = logger
+	return o
+}
+
+func (o QueryStringOptions) WithTermFields(fields map[string]bool) QueryStringOptions {
+	o.termFields = fields
 	return o
 }
 
@@ -103,6 +109,7 @@ type lexerWrapper struct {
 	lex         yyLexer
 	errs        []string
 	query       *bluge.BooleanQuery
+	options     QueryStringOptions
 	debugParser bool
 	dateFormat  string
 	logger      *log.Logger
@@ -112,6 +119,7 @@ func newLexerWrapper(lex yyLexer, options QueryStringOptions) *lexerWrapper {
 	return &lexerWrapper{
 		lex:         lex,
 		query:       bluge.NewBooleanQuery(),
+		options:     options,
 		debugParser: options.debugParser,
 		dateFormat:  options.dateFormat,
 		logger:      options.logger,
@@ -141,12 +149,17 @@ func queryTimeFromString(yylex yyLexer, t string) (time.Time, error) {
 }
 
 func queryStringStringToken(yylex yyLexer, field, str string) bluge.Query {
+	var q bluge.Query
 	if strings.HasPrefix(str, "/") && strings.HasSuffix(str, "/") {
-		return bluge.NewRegexpQuery(str[1 : len(str)-1]).SetField(field)
+		q = bluge.NewRegexpQuery(str[1 : len(str)-1]).SetField(field)
 	} else if strings.ContainsAny(str, "*?") {
-		return bluge.NewWildcardQuery(str).SetField(field)
+		q = bluge.NewWildcardQuery(str).SetField(field)
+	} else if termFields := yylex.(*lexerWrapper).options.termFields; termFields != nil && termFields[field] {
+		q = bluge.NewTermQuery(str).SetField(field)
+	} else {
+		q = bluge.NewMatchQuery(str).SetField(field)
 	}
-	return bluge.NewMatchQuery(str).SetField(field)
+	return q
 }
 
 func queryStringStringTokenFuzzy(field, str, fuzziness string) (*bluge.MatchQuery, error) {
