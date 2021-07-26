@@ -216,6 +216,20 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 					bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, 5.0, true, true).
 						SetField("field")),
 		},
+		{
+			input: `field:true`,
+			result: bluge.NewBooleanQuery().
+				AddShould(
+					bluge.NewNumericRangeInclusiveQuery(1.0, 1.0, true, true).
+						SetField("field")),
+		},
+		{
+			input: `field:false`,
+			result: bluge.NewBooleanQuery().
+				AddShould(
+					bluge.NewNumericRangeInclusiveQuery(0.0, 0.0, true, true).
+						SetField("field")),
+		},
 		// new range tests with negative number
 		{
 			input: "field:-5",

@@ -156,6 +156,10 @@ func queryStringStringToken(yylex yyLexer, field, str string) bluge.Query {
 		q = bluge.NewWildcardQuery(str).SetField(field)
 	} else if termFields := yylex.(*lexerWrapper).options.termFields; termFields != nil && termFields[field] {
 		q = bluge.NewTermQuery(str).SetField(field)
+	} else if str == "true" {
+		q = bluge.NewNumericRangeInclusiveQuery(1.0, 1.0, true, true).SetField(field)
+	} else if str == "false" {
+		q = bluge.NewNumericRangeInclusiveQuery(0.0, 0.0, true, true).SetField(field)
 	} else {
 		q = bluge.NewMatchQuery(str).SetField(field)
 	}
