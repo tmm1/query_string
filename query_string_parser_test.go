@@ -45,7 +45,10 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `"test phrase 1"`,
 			result: bluge.NewBooleanQuery().
-				AddShould(bluge.NewMatchPhraseQuery("test phrase 1")),
+				AddShould(bluge.NewBooleanQuery().AddShould(
+					bluge.NewMatchPhraseQuery("test phrase 1"),
+					bluge.NewTermQuery("test phrase 1"),
+				)),
 		},
 		{
 			input: "field:test",
@@ -349,9 +352,9 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		},
 		// escape quote inside of phrase
 		{
-			input: `"what does \"quote\" mean"`,
+			input: `field:"what does \"quote\" mean"`,
 			result: bluge.NewBooleanQuery().
-				AddShould(bluge.NewMatchPhraseQuery(`what does "quote" mean`)),
+				AddShould(bluge.NewMatchPhraseQuery(`what does "quote" mean`).SetField("field")),
 		},
 		// escaping an unsupported character retains backslash
 		{

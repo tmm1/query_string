@@ -188,6 +188,12 @@ func queryStringPhraseToken(yylex yyLexer, field, str string) bluge.Query {
 	if termFields := yylex.(*lexerWrapper).options.termFields; termFields != nil && termFields[field] {
 		return bluge.NewTermQuery(str).SetField(field)
 	}
+	if field == "" {
+		return bluge.NewBooleanQuery().AddShould(
+			bluge.NewMatchPhraseQuery(str),
+			bluge.NewTermQuery(str),
+		)
+	}
 	return bluge.NewMatchPhraseQuery(str).SetField(field)
 }
 
