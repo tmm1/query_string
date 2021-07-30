@@ -113,7 +113,7 @@ tNUMBER {
 |
 tPHRASE {
 	yylex.(*lexerWrapper).logDebugGrammarf("PHRASE - %s", $1)
-	$$ = queryStringPhraseToken("", $1)
+	$$ = queryStringPhraseToken(yylex, "", $1)
 }
 |
 tSTRING tCOLON tSTRING {
@@ -132,7 +132,7 @@ tSTRING tCOLON posOrNegNumber {
 |
 tSTRING tCOLON tPHRASE {
 	yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s PHRASE - %s", $1, $3)
-	$$ = queryStringPhraseToken($1, $3)
+	$$ = queryStringPhraseToken(yylex, $1, $3)
 }
 |
 tSTRING tCOLON tGREATER posOrNegNumber {

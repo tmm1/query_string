@@ -567,7 +567,7 @@ yydefault:
 //line query_string.y:114
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("PHRASE - %s", yyDollar[1].s)
-			yyVAL.q = queryStringPhraseToken("", yyDollar[1].s)
+			yyVAL.q = queryStringPhraseToken(yylex, "", yyDollar[1].s)
 		}
 	case 13:
 		yyDollar = yyS[yypt-3 : yypt+1]
@@ -592,7 +592,7 @@ yydefault:
 //line query_string.y:133
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s PHRASE - %s", yyDollar[1].s, yyDollar[3].s)
-			yyVAL.q = queryStringPhraseToken(yyDollar[1].s, yyDollar[3].s)
+			yyVAL.q = queryStringPhraseToken(yylex, yyDollar[1].s, yyDollar[3].s)
 		}
 	case 16:
 		yyDollar = yyS[yypt-4 : yypt+1]
