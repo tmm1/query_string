@@ -185,6 +185,9 @@ func queryStringNumberToken(field, str string) (bluge.Query, error) {
 }
 
 func queryStringPhraseToken(field, str string) *bluge.MatchPhraseQuery {
+	if termFields := yylex.(*lexerWrapper).options.termFields; termFields != nil && termFields[field] {
+		return bluge.NewTermQuery(str).SetField(field)
+	}
 	return bluge.NewMatchPhraseQuery(str).SetField(field)
 }
 
