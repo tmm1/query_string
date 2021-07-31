@@ -118,7 +118,7 @@ type lexerWrapper struct {
 func newLexerWrapper(lex yyLexer, options QueryStringOptions) *lexerWrapper {
 	return &lexerWrapper{
 		lex:         lex,
-		query:       bluge.NewBooleanQuery(),
+		query:       bluge.NewBooleanQuery().SetMinShould(1),
 		options:     options,
 		debugParser: options.debugParser,
 		dateFormat:  options.dateFormat,
