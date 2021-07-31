@@ -48,7 +48,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 				AddShould(bluge.NewBooleanQuery().AddShould(
 					bluge.NewMatchPhraseQuery("test phrase 1"),
 					bluge.NewTermQuery("test phrase 1"),
-				)),
+				).SetMinShould(1)),
 		},
 		{
 			input: "field:test",
@@ -132,7 +132,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			input: "33",
 			result: bluge.NewBooleanQuery().
 				AddShould(
-					bluge.NewBooleanQuery().
+					bluge.NewBooleanQuery().SetMinShould(1).
 						AddShould(bluge.NewMatchQuery("33")).
 						AddShould(
 							bluge.NewNumericRangeInclusiveQuery(33.0, 33.0,
@@ -142,7 +142,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			input: "field:33",
 			result: bluge.NewBooleanQuery().
 				AddShould(
-					bluge.NewBooleanQuery().
+					bluge.NewBooleanQuery().SetMinShould(1).
 						AddShould(bluge.NewMatchQuery("33").SetField("field")).
 						AddShould(
 							bluge.NewNumericRangeInclusiveQuery(33.0, 33.0,
@@ -168,7 +168,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			input: "watex~ 2",
 			result: bluge.NewBooleanQuery().
 				AddShould(bluge.NewMatchQuery("watex").SetFuzziness(1)).
-				AddShould(bluge.NewBooleanQuery().
+				AddShould(bluge.NewBooleanQuery().SetMinShould(1).
 					AddShould(bluge.NewMatchQuery("2")).
 					AddShould(
 						bluge.NewNumericRangeInclusiveQuery(2.0, 2.0, true, true))),
@@ -238,7 +238,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			input: "field:-5",
 			result: bluge.NewBooleanQuery().
 				AddShould(
-					bluge.NewBooleanQuery().
+					bluge.NewBooleanQuery().SetMinShould(1).
 						AddShould(
 							bluge.NewMatchQuery("-5").SetField("field")).
 						AddShould(
