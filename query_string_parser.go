@@ -161,7 +161,7 @@ func queryStringStringToken(yylex yyLexer, field, str string) bluge.Query {
 	} else if str == "false" {
 		q = bluge.NewNumericRangeInclusiveQuery(0.0, 0.0, true, true).SetField(field)
 	} else {
-		q = bluge.NewMatchQuery(str).SetField(field)
+		q = bluge.NewMatchQuery(str).SetField(field).SetOperator(bluge.MatchQueryOperatorAnd)
 	}
 	return q
 }

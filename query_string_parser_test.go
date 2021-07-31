@@ -27,6 +27,10 @@ func baseQuery() *bluge.BooleanQuery {
 	return bluge.NewBooleanQuery().SetMinShould(1)
 }
 
+func matchQuery(q string) *bluge.MatchQuery {
+	return bluge.NewMatchQuery(q).SetOperator(bluge.MatchQueryOperatorAnd)
+}
+
 func TestQuerySyntaxParserValid(t *testing.T) {
 	theDate, err := time.Parse(time.RFC3339, "2006-01-02T15:04:05Z")
 	if err != nil {
@@ -39,12 +43,12 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "test",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("test")),
+				AddShould(matchQuery("test")),
 		},
 		{
 			input: "127.0.0.1",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("127.0.0.1")),
+				AddShould(matchQuery("127.0.0.1")),
 		},
 		{
 			input: `"test phrase 1"`,
@@ -57,47 +61,47 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "field:test",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("test").SetField("field")),
+				AddShould(matchQuery("test").SetField("field")),
 		},
 		// - is allowed inside a term, just not the start
 		{
 			input: "field:t-est",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("t-est").SetField("field")),
+				AddShould(matchQuery("t-est").SetField("field")),
 		},
 		// + is allowed inside a term, just not the start
 		{
 			input: "field:t+est",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("t+est").SetField("field")),
+				AddShould(matchQuery("t+est").SetField("field")),
 		},
 		// > is allowed inside a term, just not the start
 		{
 			input: "field:t>est",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("t>est").SetField("field")),
+				AddShould(matchQuery("t>est").SetField("field")),
 		},
 		// < is allowed inside a term, just not the start
 		{
 			input: "field:t<est",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("t<est").SetField("field")),
+				AddShould(matchQuery("t<est").SetField("field")),
 		},
 		// = is allowed inside a term, just not the start
 		{
 			input: "field:t=est",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("t=est").SetField("field")),
+				AddShould(matchQuery("t=est").SetField("field")),
 		},
 		{
 			input: "+field1:test1",
 			result: baseQuery().
-				AddMust(bluge.NewMatchQuery("test1").SetField("field1")),
+				AddMust(matchQuery("test1").SetField("field1")),
 		},
 		{
 			input: "-field2:test2",
 			result: baseQuery().
-				AddMustNot(bluge.NewMatchQuery("test2").SetField("field2")),
+				AddMustNot(matchQuery("test2").SetField("field2")),
 		},
 		{
 			input: `field3:"test phrase 2"`,
@@ -117,20 +121,20 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `+field6:test3 -field7:test4 field8:test5`,
 			result: baseQuery().
-				AddMust(bluge.NewMatchQuery("test3").SetField("field6")).
-				AddShould(bluge.NewMatchQuery("test5").SetField("field8")).
-				AddMustNot(bluge.NewMatchQuery("test4").SetField("field7")),
+				AddMust(matchQuery("test3").SetField("field6")).
+				AddShould(matchQuery("test5").SetField("field8")).
+				AddMustNot(matchQuery("test4").SetField("field7")),
 		},
 		{
 			input: "test^3",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("test").SetBoost(3.0)),
+				AddShould(matchQuery("test").SetBoost(3.0)),
 		},
 		{
 			input: "test^3 other^6",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("test").SetBoost(3.0)).
-				AddShould(bluge.NewMatchQuery("other").SetBoost(6.0)),
+				AddShould(matchQuery("test").SetBoost(3.0)).
+				AddShould(matchQuery("other").SetBoost(6.0)),
 		},
 		{
 			input: "33",
@@ -156,7 +160,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "cat-dog",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("cat-dog")),
+				AddShould(matchQuery("cat-dog")),
 		},
 		{
 			input: "watex~",
@@ -193,7 +197,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `field:555c3bb06f7a127cda000005`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("555c3bb06f7a127cda000005").SetField("field")),
+				AddShould(matchQuery("555c3bb06f7a127cda000005").SetField("field")),
 		},
 		{
 			input: `field:>5`,
@@ -327,32 +331,32 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `name\:marty`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("name:marty")),
+				AddShould(matchQuery("name:marty")),
 		},
 		// first colon delimiter, second escaped
 		{
 			input: `name:marty\:couchbase`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("marty:couchbase").
+				AddShould(matchQuery("marty:couchbase").
 					SetField("name")),
 		},
 		// escape space, single arguemnt to match query
 		{
 			input: `marty\ couchbase`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("marty couchbase")),
+				AddShould(matchQuery("marty couchbase")),
 		},
 		// escape leading plus, not a must clause
 		{
 			input: `\+marty`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("+marty")),
+				AddShould(matchQuery("+marty")),
 		},
 		// escape leading minus, not a must not clause
 		{
 			input: `\-marty`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("-marty")),
+				AddShould(matchQuery("-marty")),
 		},
 		// escape quote inside of phrase
 		{
@@ -364,19 +368,19 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `can\ i\ escap\e`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery(`can i escap\e`)),
+				AddShould(matchQuery(`can i escap\e`)),
 		},
 		// leading spaces
 		{
 			input: `   what`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery(`what`)),
+				AddShould(matchQuery(`what`)),
 		},
 		// no boost value defaults to 1
 		{
 			input: `term^`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery(`term`).
+				AddShould(matchQuery(`term`).
 					SetBoost(1.0)),
 		},
 		// weird lexer cases, something that starts like a number
@@ -384,12 +388,12 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `3.0\:`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery(`3.0:`)),
+				AddShould(matchQuery(`3.0:`)),
 		},
 		{
 			input: `3.0\a`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery(`3.0\a`)),
+				AddShould(matchQuery(`3.0\a`)),
 		},
 	}
 
