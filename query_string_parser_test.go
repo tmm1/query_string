@@ -404,7 +404,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			t.Fatal(err)
 		}
 		if !reflect.DeepEqual(q, test.result) {
-			t.Errorf("Expected %#v, got %#v: for %s", test.result, q, test.input)
+			t.Errorf("\nExpected: %#v\n     got: %#v\n     for: %s", test.result, q, test.input)
 		}
 	}
 }
@@ -456,7 +456,7 @@ func TestQueryOptionTermFields(t *testing.T) {
 	}
 	result := baseQuery().AddMust(bluge.NewTermQuery("term").SetField("Field"))
 	if !reflect.DeepEqual(q, result) {
-		t.Errorf("Expected %#v, got %#v: for %s", result, q, input)
+		t.Errorf("\nExpected: %#v\n     got: %#v\n     for: %s", result, q, input)
 	}
 
 }
