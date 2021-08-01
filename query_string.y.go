@@ -138,7 +138,7 @@ var yyErrorMessages = [...]struct {
 
 var (
 	yyDebug        = 0
-	yyErrorVerbose = false
+	yyErrorVerbose = true
 )
 
 type yyLexer interface {

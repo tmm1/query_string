@@ -18,6 +18,8 @@
 //go:generate goyacc -o query_string.y.go query_string.y
 //go:generate sed -i.tmp -e 1d query_string.y.go
 //go:generate rm query_string.y.go.tmp
+//go:generate sed -i.tmp -e "s,yyErrorVerbose = false,yyErrorVerbose = true," query_string.y.go
+//go:generate rm query_string.y.go.tmp
 //go:generate gofmt -s -w query_string.y.go
 
 // note: OSX sed and gnu sed handle the -i (in-place) option differently.
