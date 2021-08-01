@@ -396,6 +396,19 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			result: baseQuery().
 				AddShould(matchQuery(`3.0\a`)),
 		},
+		// implicit phrases
+		{
+			input: "animated scifi",
+			result: baseQuery().
+				AddShould(matchQuery("animated scifi")),
+		},
+		{
+			input: "animated scifi Tag:test comedy movies",
+			result: baseQuery().AddShould(
+				matchQuery("animated scifi"),
+				matchQuery("test").SetField("Tag"),
+				matchQuery("comedy movies")),
+		},
 	}
 
 	for _, test := range tests {

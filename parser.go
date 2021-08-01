@@ -87,6 +87,46 @@ func ParseQueryString(query string, options QueryStringOptions) (rq bluge.Query,
 	if len(lex.errs) > 0 {
 		return nil, fmt.Errorf(strings.Join(lex.errs, "\n"))
 	}
+
+	q := lex.query
+	shoulds := q.Shoulds()
+	n := 0
+	origN := len(shoulds)
+	var last *bluge.MatchQuery
+	var words []string
+	for _, s := range shoulds {
+		if sq, ok := s.(*bluge.MatchQuery); ok && sq.Field() == "" && sq.Fuzziness() == 0 && sq.Boost() == 1.0 {
+			last = sq
+			words = append(words, sq.Match())
+			continue
+		}
+		if len(words) == 1 {
+			shoulds[n] = last
+			n++
+		} else if len(words) > 1 {
+			shoulds[n] = bluge.NewMatchQuery(strings.Join(words, " ")).SetOperator(bluge.MatchQueryOperatorAnd)
+			n++
+		}
+		last = nil
+		words = nil
+		shoulds[n] = s
+		n++
+	}
+	if len(words) == 1 {
+		shoulds[n] = last
+		n++
+	} else if len(words) > 1 {
+		shoulds[n] = bluge.NewMatchQuery(strings.Join(words, " ")).SetOperator(bluge.MatchQueryOperatorAnd)
+		n++
+	}
+	if origN != n {
+		shoulds = shoulds[:n]
+		lex.query = bluge.NewBooleanQuery().
+			AddShould(shoulds...).
+			AddMust(q.Musts()...).
+			AddMustNot(q.MustNots()...).
+			SetMinShould(q.MinShould())
+	}
 	return lex.query, nil
 }
 
