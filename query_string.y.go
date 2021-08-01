@@ -533,7 +533,8 @@ yydefault:
 		yyDollar = yyS[yypt-2 : yypt+1]
 //line query_string.y:87
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FUZZY STRING - %s %s", yyDollar[1].s, yyDollar[2].s)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FUZZY STRING - %s %s", yyDollar[1].s, yyDollar[2].s)
 			q, err := queryStringStringTokenFuzzy("", yyDollar[1].s, yyDollar[2].s)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
@@ -542,10 +543,11 @@ yydefault:
 		}
 	case 10:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:96
+//line query_string.y:97
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s FUZZY STRING - %s %s", yyDollar[1].s, yyDollar[3].s, yyDollar[4].s)
-			q, err := queryStringStringTokenFuzzy(yyDollar[1].s, yyDollar[3].s, yyDollar[4].s)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - %s FUZZY STRING - %s %s", yyDollar[1].s, yyDollar[3].s, yyDollar[4].s)
+			q, err := queryStringStringTokenFuzzy(w.fieldname(yyDollar[1].s), yyDollar[3].s, yyDollar[4].s)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -553,7 +555,7 @@ yydefault:
 		}
 	case 11:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:105
+//line query_string.y:107
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("STRING - %s", yyDollar[1].s)
 			q, err := queryStringNumberToken("", yyDollar[1].s)
@@ -564,24 +566,26 @@ yydefault:
 		}
 	case 12:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:114
+//line query_string.y:116
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("PHRASE - %s", yyDollar[1].s)
 			yyVAL.q = queryStringPhraseToken(yylex, "", yyDollar[1].s)
 		}
 	case 13:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line query_string.y:119
+//line query_string.y:121
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s STRING - %s", yyDollar[1].s, yyDollar[3].s)
-			yyVAL.q = queryStringStringToken(yylex, yyDollar[1].s, yyDollar[3].s)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - %s STRING - %s", yyDollar[1].s, yyDollar[3].s)
+			yyVAL.q = queryStringStringToken(yylex, w.fieldname(yyDollar[1].s), yyDollar[3].s)
 		}
 	case 14:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line query_string.y:124
+//line query_string.y:127
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s STRING - %s", yyDollar[1].s, yyDollar[3].s)
-			q, err := queryStringNumberToken(yyDollar[1].s, yyDollar[3].s)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - %s STRING - %s", yyDollar[1].s, yyDollar[3].s)
+			q, err := queryStringNumberToken(w.fieldname(yyDollar[1].s), yyDollar[3].s)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -589,17 +593,19 @@ yydefault:
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line query_string.y:133
+//line query_string.y:137
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - %s PHRASE - %s", yyDollar[1].s, yyDollar[3].s)
-			yyVAL.q = queryStringPhraseToken(yylex, yyDollar[1].s, yyDollar[3].s)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - %s PHRASE - %s", yyDollar[1].s, yyDollar[3].s)
+			yyVAL.q = queryStringPhraseToken(yylex, w.fieldname(yyDollar[1].s), yyDollar[3].s)
 		}
 	case 16:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:138
+//line query_string.y:143
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - GREATER THAN %s", yyDollar[4].s)
-			q, err := queryStringNumericRangeGreaterThanOrEqual(yyDollar[1].s, yyDollar[4].s, false)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - GREATER THAN %s", yyDollar[4].s)
+			q, err := queryStringNumericRangeGreaterThanOrEqual(w.fieldname(yyDollar[1].s), yyDollar[4].s, false)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -607,10 +613,11 @@ yydefault:
 		}
 	case 17:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:147
+//line query_string.y:153
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - GREATER THAN OR EQUAL %s", yyDollar[5].s)
-			q, err := queryStringNumericRangeGreaterThanOrEqual(yyDollar[1].s, yyDollar[5].s, true)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - GREATER THAN OR EQUAL %s", yyDollar[5].s)
+			q, err := queryStringNumericRangeGreaterThanOrEqual(w.fieldname(yyDollar[1].s), yyDollar[5].s, true)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -618,10 +625,11 @@ yydefault:
 		}
 	case 18:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:156
+//line query_string.y:163
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - LESS THAN %s", yyDollar[4].s)
-			q, err := queryStringNumericRangeLessThanOrEqual(yyDollar[1].s, yyDollar[4].s, false)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - LESS THAN %s", yyDollar[4].s)
+			q, err := queryStringNumericRangeLessThanOrEqual(w.fieldname(yyDollar[1].s), yyDollar[4].s, false)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -629,10 +637,11 @@ yydefault:
 		}
 	case 19:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:165
+//line query_string.y:173
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - LESS THAN OR EQUAL %s", yyDollar[5].s)
-			q, err := queryStringNumericRangeLessThanOrEqual(yyDollar[1].s, yyDollar[5].s, true)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - LESS THAN OR EQUAL %s", yyDollar[5].s)
+			q, err := queryStringNumericRangeLessThanOrEqual(w.fieldname(yyDollar[1].s), yyDollar[5].s, true)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -640,10 +649,11 @@ yydefault:
 		}
 	case 20:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:174
+//line query_string.y:183
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - GREATER THAN DATE %s", yyDollar[4].s)
-			q, err := queryStringDateRangeGreaterThanOrEqual(yylex, yyDollar[1].s, yyDollar[4].s, false)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - GREATER THAN DATE %s", yyDollar[4].s)
+			q, err := queryStringDateRangeGreaterThanOrEqual(yylex, w.fieldname(yyDollar[1].s), yyDollar[4].s, false)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -651,10 +661,11 @@ yydefault:
 		}
 	case 21:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:183
+//line query_string.y:193
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - GREATER THAN OR EQUAL DATE %s", yyDollar[5].s)
-			q, err := queryStringDateRangeGreaterThanOrEqual(yylex, yyDollar[1].s, yyDollar[5].s, true)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - GREATER THAN OR EQUAL DATE %s", yyDollar[5].s)
+			q, err := queryStringDateRangeGreaterThanOrEqual(yylex, w.fieldname(yyDollar[1].s), yyDollar[5].s, true)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -662,10 +673,11 @@ yydefault:
 		}
 	case 22:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:192
+//line query_string.y:203
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - LESS THAN DATE %s", yyDollar[4].s)
-			q, err := queryStringDateRangeLessThanOrEqual(yylex, yyDollar[1].s, yyDollar[4].s, false)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - LESS THAN DATE %s", yyDollar[4].s)
+			q, err := queryStringDateRangeLessThanOrEqual(yylex, w.fieldname(yyDollar[1].s), yyDollar[4].s, false)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -673,10 +685,11 @@ yydefault:
 		}
 	case 23:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:201
+//line query_string.y:213
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("FIELD - LESS THAN OR EQUAL DATE %s", yyDollar[5].s)
-			q, err := queryStringDateRangeLessThanOrEqual(yylex, yyDollar[1].s, yyDollar[5].s, true)
+			w := yylex.(*lexerWrapper)
+			w.logDebugGrammarf("FIELD - LESS THAN OR EQUAL DATE %s", yyDollar[5].s)
+			q, err := queryStringDateRangeLessThanOrEqual(yylex, w.fieldname(yyDollar[1].s), yyDollar[5].s, true)
 			if err != nil {
 				yylex.(*lexerWrapper).lex.Error(err.Error())
 			}
@@ -684,13 +697,13 @@ yydefault:
 		}
 	case 24:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line query_string.y:211
+//line query_string.y:224
 		{
 			yyVAL.pf = nil
 		}
 	case 25:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:215
+//line query_string.y:228
 		{
 			yyVAL.pf = nil
 			yylex.(*lexerWrapper).logDebugGrammarf("BOOST %s", yyDollar[1].s)
@@ -703,13 +716,13 @@ yydefault:
 		}
 	case 26:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:227
+//line query_string.y:240
 		{
 			yyVAL.s = yyDollar[1].s
 		}
 	case 27:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line query_string.y:231
+//line query_string.y:244
 		{
 			yyVAL.s = "-" + yyDollar[2].s
 		}

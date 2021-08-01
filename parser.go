@@ -44,6 +44,7 @@ type QueryStringOptions struct {
 	dateFormat  string
 	logger      *log.Logger
 	termFields  map[string]bool
+	lowerFields bool
 }
 
 func DefaultOptions() QueryStringOptions {
@@ -74,6 +75,11 @@ func (o QueryStringOptions) WithLogger(logger *log.Logger) QueryStringOptions {
 
 func (o QueryStringOptions) WithTermFields(fields map[string]bool) QueryStringOptions {
 	o.termFields = fields
+	return o
+}
+
+func (o QueryStringOptions) WithLowercaseFields() QueryStringOptions {
+	o.lowerFields = true
 	return o
 }
 
@@ -180,6 +186,13 @@ func (l *lexerWrapper) logDebugGrammarf(format string, v ...interface{}) {
 	if l.debugParser {
 		l.logger.Printf(format, v...)
 	}
+}
+
+func (l *lexerWrapper) fieldname(in string) string {
+	if l.options.lowerFields {
+		return strings.ToLower(in)
+	}
+	return in
 }
 
 func queryTimeFromString(yylex yyLexer, t string) (time.Time, error) {

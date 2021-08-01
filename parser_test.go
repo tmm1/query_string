@@ -498,6 +498,19 @@ func TestQueryOptionTermFields(t *testing.T) {
 	}
 }
 
+func TestQueryOptionLowerFields(t *testing.T) {
+	input := "+Field:term"
+	opts := DefaultOptions().WithLowercaseFields()
+	q, err := ParseQueryString(input, opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := baseQuery().AddMust(matchQuery("term").SetField("field"))
+	if !reflect.DeepEqual(q, result) {
+		t.Errorf("\nExpected: %s\n     got: %s\n     for: %s", queryInfo(result), queryInfo(q), input)
+	}
+}
+
 var extTokenTypes []int
 var extTokens []yySymType
 
