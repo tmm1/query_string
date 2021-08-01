@@ -15,6 +15,7 @@
 package querystr
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -404,9 +405,33 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 			t.Fatal(err)
 		}
 		if !reflect.DeepEqual(q, test.result) {
-			t.Errorf("\nExpected: %#v\n     got: %#v\n     for: %s", test.result, q, test.input)
+			t.Errorf("\nExpected: %s\n     got: %s\n     for: %s", queryInfo(test.result), queryInfo(q), test.input)
 		}
 	}
+}
+
+func querySliceInfo(s []bluge.Query) string {
+	out := "["
+	for _, q := range s {
+		out += " " + queryInfo(q)
+	}
+	if len(s) > 0 {
+		out += " "
+	}
+	out += "]"
+	return out
+}
+
+func queryInfo(q bluge.Query) string {
+	if bq, ok := q.(*bluge.BooleanQuery); ok {
+		return fmt.Sprintf("BooleanQuery{ must=%s should=%s mustnot=%s minShould=%v }",
+			querySliceInfo(bq.Musts()),
+			querySliceInfo(bq.Shoulds()),
+			querySliceInfo(bq.MustNots()),
+			bq.MinShould(),
+		)
+	}
+	return fmt.Sprintf("%#v", q)
 }
 
 func TestQuerySyntaxParserInvalid(t *testing.T) {
@@ -456,7 +481,7 @@ func TestQueryOptionTermFields(t *testing.T) {
 	}
 	result := baseQuery().AddMust(bluge.NewTermQuery("term").SetField("Field"))
 	if !reflect.DeepEqual(q, result) {
-		t.Errorf("\nExpected: %#v\n     got: %#v\n     for: %s", result, q, input)
+		t.Errorf("\nExpected: %s\n     got: %s\n     for: %s", queryInfo(result), queryInfo(q), input)
 	}
 }
 
