@@ -23,7 +23,7 @@ tEQUAL tTILDE
 %type <s>                tTILDE
 %type <s>                tBOOST
 %type <q>                searchBase
-%type <pf>                searchSuffix
+%type <pf>               searchSuffix
 %type <n>                searchPrefix
 
 %%

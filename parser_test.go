@@ -458,7 +458,6 @@ func TestQueryOptionTermFields(t *testing.T) {
 	if !reflect.DeepEqual(q, result) {
 		t.Errorf("\nExpected: %#v\n     got: %#v\n     for: %s", result, q, input)
 	}
-
 }
 
 var extTokenTypes []int
