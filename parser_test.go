@@ -16,6 +16,7 @@ package querystr
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"strings"
 	"testing"
@@ -419,11 +420,13 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		},
 	}
 
+	opts := DefaultOptions().WithLogger(log.Default())
+	// opts = opts.WithDebugLexer(true)
+	// opts = opts.WithDebugParser(true)
 	for _, test := range tests {
-
-		q, err := ParseQueryString(test.input, DefaultOptions())
+		q, err := ParseQueryString(test.input, opts)
 		if err != nil {
-			t.Fatal(err)
+			t.Errorf("error parsing query `%s`: %v", test.input, err)
 		}
 		if !reflect.DeepEqual(q, test.result) {
 			t.Errorf("\nExpected: %s\n     got: %s\n     for: %s", queryInfo(test.result), queryInfo(q), test.input)
