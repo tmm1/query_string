@@ -30,6 +30,7 @@ const tGREATER = 57353
 const tLESS = 57354
 const tEQUAL = 57355
 const tTILDE = 57356
+const tQUESTION = 57357
 
 var yyToknames = [...]string{
 	"$end",
@@ -46,6 +47,7 @@ var yyToknames = [...]string{
 	"tLESS",
 	"tEQUAL",
 	"tTILDE",
+	"tQUESTION",
 }
 
 var yyStatenames = [...]string{}
@@ -66,51 +68,51 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 42
+const yyLast = 43
 
 var yyAct = [...]int{
-	17, 16, 18, 23, 22, 30, 3, 21, 19, 20,
-	29, 26, 22, 22, 1, 21, 21, 15, 28, 25,
-	24, 27, 34, 14, 22, 13, 31, 21, 32, 33,
-	22, 9, 11, 21, 5, 6, 2, 10, 4, 12,
-	7, 8,
+	18, 17, 19, 24, 23, 6, 7, 22, 20, 21,
+	30, 27, 23, 23, 5, 22, 22, 16, 29, 26,
+	31, 25, 28, 15, 35, 14, 23, 32, 2, 22,
+	34, 33, 8, 23, 10, 12, 22, 3, 1, 4,
+	11, 13, 9,
 }
 
 var yyPact = [...]int{
-	28, -1000, -1000, 28, 27, -1000, -1000, -1000, 16, 9,
-	-1000, -1000, -1000, -1000, -1000, -3, -11, -1000, -1000, 6,
-	5, -1000, -5, -1000, -1000, 23, -1000, -1000, 17, -1000,
-	-1000, -1000, -1000, -1000, -1000,
+	-1, -1000, -1000, -1, 30, -1000, -1000, -1000, -1000, 16,
+	9, -1000, -1000, -1000, -1000, -1000, -3, -11, -1000, -1000,
+	6, 5, -1000, 10, -1000, -1000, 26, -1000, -1000, 19,
+	-1000, -1000, -1000, -1000, -1000, -1000,
 }
 
 var yyPgo = [...]int{
-	0, 0, 41, 39, 38, 14, 36, 6,
+	0, 0, 42, 41, 39, 38, 28, 37,
 }
 
 var yyR1 = [...]int{
-	0, 5, 6, 6, 7, 4, 4, 4, 2, 2,
+	0, 5, 6, 6, 7, 4, 4, 4, 4, 2,
 	2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-	2, 2, 2, 2, 3, 3, 1, 1,
+	2, 2, 2, 2, 2, 3, 3, 1, 1,
 }
 
 var yyR2 = [...]int{
-	0, 1, 2, 1, 3, 0, 1, 1, 1, 2,
-	4, 1, 1, 3, 3, 3, 4, 5, 4, 5,
-	4, 5, 4, 5, 0, 1, 1, 2,
+	0, 1, 2, 1, 3, 0, 1, 1, 1, 1,
+	2, 4, 1, 1, 3, 3, 3, 4, 5, 4,
+	5, 4, 5, 4, 5, 0, 1, 1, 2,
 }
 
 var yyChk = [...]int{
-	-1000, -5, -6, -7, -4, 6, 7, -6, -2, 4,
-	10, 5, -3, 9, 14, 8, 4, -1, 5, 11,
-	12, 10, 7, 14, -1, 13, 5, -1, 13, 5,
-	10, -1, 5, -1, 5,
+	-1000, -5, -6, -7, -4, 15, 6, 7, -6, -2,
+	4, 10, 5, -3, 9, 14, 8, 4, -1, 5,
+	11, 12, 10, 7, 14, -1, 13, 5, -1, 13,
+	5, 10, -1, 5, -1, 5,
 }
 
 var yyDef = [...]int{
-	5, -2, 1, -2, 0, 6, 7, 2, 24, 8,
-	11, 12, 4, 25, 9, 0, 13, 14, 15, 0,
-	0, 26, 0, 10, 16, 0, 20, 18, 0, 22,
-	27, 17, 21, 19, 23,
+	5, -2, 1, -2, 0, 6, 7, 8, 2, 25,
+	9, 12, 13, 4, 26, 10, 0, 14, 15, 16,
+	0, 0, 27, 0, 11, 17, 0, 21, 19, 0,
+	23, 28, 18, 22, 20, 24,
 }
 
 var yyTok1 = [...]int{
@@ -119,7 +121,7 @@ var yyTok1 = [...]int{
 
 var yyTok2 = [...]int{
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-	12, 13, 14,
+	12, 13, 14, 15,
 }
 
 var yyTok3 = [...]int{
@@ -506,32 +508,39 @@ yydefault:
 		yyDollar = yyS[yypt-0 : yypt+1]
 //line query_string.y:67
 		{
-			yyVAL.n = queryShould
+			yyVAL.n = queryMust
 		}
 	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
 //line query_string.y:71
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("PLUS")
-			yyVAL.n = queryMust
+			yylex.(*lexerWrapper).logDebugGrammarf("QUESTION")
+			yyVAL.n = queryShould
 		}
 	case 7:
 		yyDollar = yyS[yypt-1 : yypt+1]
 //line query_string.y:76
 		{
-			yylex.(*lexerWrapper).logDebugGrammarf("MINUS")
-			yyVAL.n = queryMustNot
+			yylex.(*lexerWrapper).logDebugGrammarf("PLUS")
+			yyVAL.n = queryMust
 		}
 	case 8:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:82
+//line query_string.y:81
+		{
+			yylex.(*lexerWrapper).logDebugGrammarf("MINUS")
+			yyVAL.n = queryMustNot
+		}
+	case 9:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line query_string.y:87
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("STRING - %s", yyDollar[1].s)
 			yyVAL.q = queryStringStringToken(yylex, "", yyDollar[1].s)
 		}
-	case 9:
+	case 10:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line query_string.y:87
+//line query_string.y:92
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FUZZY STRING - %s %s", yyDollar[1].s, yyDollar[2].s)
@@ -541,9 +550,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 10:
+	case 11:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:97
+//line query_string.y:102
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - %s FUZZY STRING - %s %s", yyDollar[1].s, yyDollar[3].s, yyDollar[4].s)
@@ -553,9 +562,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 11:
+	case 12:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:107
+//line query_string.y:112
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("STRING - %s", yyDollar[1].s)
 			q, err := queryStringNumberToken("", yyDollar[1].s)
@@ -564,24 +573,24 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 12:
+	case 13:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:116
+//line query_string.y:121
 		{
 			yylex.(*lexerWrapper).logDebugGrammarf("PHRASE - %s", yyDollar[1].s)
 			yyVAL.q = queryStringPhraseToken(yylex, "", yyDollar[1].s)
 		}
-	case 13:
+	case 14:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line query_string.y:121
+//line query_string.y:126
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - %s STRING - %s", yyDollar[1].s, yyDollar[3].s)
 			yyVAL.q = queryStringStringToken(yylex, w.fieldname(yyDollar[1].s), yyDollar[3].s)
 		}
-	case 14:
+	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line query_string.y:127
+//line query_string.y:132
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - %s STRING - %s", yyDollar[1].s, yyDollar[3].s)
@@ -591,17 +600,17 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 15:
+	case 16:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line query_string.y:137
+//line query_string.y:142
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - %s PHRASE - %s", yyDollar[1].s, yyDollar[3].s)
 			yyVAL.q = queryStringPhraseToken(yylex, w.fieldname(yyDollar[1].s), yyDollar[3].s)
 		}
-	case 16:
+	case 17:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:143
+//line query_string.y:148
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - GREATER THAN %s", yyDollar[4].s)
@@ -611,9 +620,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 17:
+	case 18:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:153
+//line query_string.y:158
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - GREATER THAN OR EQUAL %s", yyDollar[5].s)
@@ -623,9 +632,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 18:
+	case 19:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:163
+//line query_string.y:168
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - LESS THAN %s", yyDollar[4].s)
@@ -635,9 +644,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 19:
+	case 20:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:173
+//line query_string.y:178
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - LESS THAN OR EQUAL %s", yyDollar[5].s)
@@ -647,9 +656,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 20:
+	case 21:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:183
+//line query_string.y:188
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - GREATER THAN DATE %s", yyDollar[4].s)
@@ -659,9 +668,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 21:
+	case 22:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:193
+//line query_string.y:198
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - GREATER THAN OR EQUAL DATE %s", yyDollar[5].s)
@@ -671,9 +680,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 22:
+	case 23:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line query_string.y:203
+//line query_string.y:208
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - LESS THAN DATE %s", yyDollar[4].s)
@@ -683,9 +692,9 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 23:
+	case 24:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line query_string.y:213
+//line query_string.y:218
 		{
 			w := yylex.(*lexerWrapper)
 			w.logDebugGrammarf("FIELD - LESS THAN OR EQUAL DATE %s", yyDollar[5].s)
@@ -695,15 +704,15 @@ yydefault:
 			}
 			yyVAL.q = q
 		}
-	case 24:
+	case 25:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line query_string.y:224
+//line query_string.y:229
 		{
 			yyVAL.pf = nil
 		}
-	case 25:
+	case 26:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:228
+//line query_string.y:233
 		{
 			yyVAL.pf = nil
 			yylex.(*lexerWrapper).logDebugGrammarf("BOOST %s", yyDollar[1].s)
@@ -714,15 +723,15 @@ yydefault:
 				yyVAL.pf = &boost
 			}
 		}
-	case 26:
+	case 27:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line query_string.y:240
+//line query_string.y:245
 		{
 			yyVAL.s = yyDollar[1].s
 		}
-	case 27:
+	case 28:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line query_string.y:244
+//line query_string.y:249
 		{
 			yyVAL.s = "-" + yyDollar[2].s
 		}

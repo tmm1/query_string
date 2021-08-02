@@ -44,17 +44,17 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "test",
 			result: baseQuery().
-				AddShould(matchQuery("test")),
+				AddMust(matchQuery("test")),
 		},
 		{
 			input: "127.0.0.1",
 			result: baseQuery().
-				AddShould(matchQuery("127.0.0.1")),
+				AddMust(matchQuery("127.0.0.1")),
 		},
 		{
 			input: `"test phrase 1"`,
 			result: baseQuery().
-				AddShould(bluge.NewBooleanQuery().AddShould(
+				AddMust(bluge.NewBooleanQuery().AddShould(
 					bluge.NewMatchPhraseQuery("test phrase 1"),
 					bluge.NewTermQuery("test phrase 1"),
 				).SetMinShould(1)),
@@ -62,37 +62,37 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "field:test",
 			result: baseQuery().
-				AddShould(matchQuery("test").SetField("field")),
+				AddMust(matchQuery("test").SetField("field")),
 		},
 		// - is allowed inside a term, just not the start
 		{
 			input: "field:t-est",
 			result: baseQuery().
-				AddShould(matchQuery("t-est").SetField("field")),
+				AddMust(matchQuery("t-est").SetField("field")),
 		},
 		// + is allowed inside a term, just not the start
 		{
 			input: "field:t+est",
 			result: baseQuery().
-				AddShould(matchQuery("t+est").SetField("field")),
+				AddMust(matchQuery("t+est").SetField("field")),
 		},
 		// > is allowed inside a term, just not the start
 		{
 			input: "field:t>est",
 			result: baseQuery().
-				AddShould(matchQuery("t>est").SetField("field")),
+				AddMust(matchQuery("t>est").SetField("field")),
 		},
 		// < is allowed inside a term, just not the start
 		{
 			input: "field:t<est",
 			result: baseQuery().
-				AddShould(matchQuery("t<est").SetField("field")),
+				AddMust(matchQuery("t<est").SetField("field")),
 		},
 		// = is allowed inside a term, just not the start
 		{
 			input: "field:t=est",
 			result: baseQuery().
-				AddShould(matchQuery("t=est").SetField("field")),
+				AddMust(matchQuery("t=est").SetField("field")),
 		},
 		{
 			input: "+field1:test1",
@@ -107,7 +107,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `field3:"test phrase 2"`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchPhraseQuery("test phrase 2").SetField("field3")),
+				AddMust(bluge.NewMatchPhraseQuery("test phrase 2").SetField("field3")),
 		},
 		{
 			input: `+field4:"test phrase 1"`,
@@ -120,7 +120,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 				AddMustNot(bluge.NewMatchPhraseQuery("test phrase 2").SetField("field5")),
 		},
 		{
-			input: `+field6:test3 -field7:test4 field8:test5`,
+			input: `+field6:test3 -field7:test4 ?field8:test5`,
 			result: baseQuery().
 				AddMust(matchQuery("test3").SetField("field6")).
 				AddShould(matchQuery("test5").SetField("field8")).
@@ -129,18 +129,18 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "test^3",
 			result: baseQuery().
-				AddShould(matchQuery("test").SetBoost(3.0)),
+				AddMust(matchQuery("test").SetBoost(3.0)),
 		},
 		{
 			input: "test^3 other^6",
 			result: baseQuery().
-				AddShould(matchQuery("test").SetBoost(3.0)).
-				AddShould(matchQuery("other").SetBoost(6.0)),
+				AddMust(matchQuery("test").SetBoost(3.0)).
+				AddMust(matchQuery("other").SetBoost(6.0)),
 		},
 		{
 			input: "33",
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewBooleanQuery().SetMinShould(1).
 						AddShould(bluge.NewMatchQuery("33")).
 						AddShould(
@@ -150,7 +150,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "field:33",
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewBooleanQuery().SetMinShould(1).
 						AddShould(bluge.NewMatchQuery("33").SetField("field")).
 						AddShould(
@@ -161,29 +161,29 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "cat-dog",
 			result: baseQuery().
-				AddShould(matchQuery("cat-dog")),
+				AddMust(matchQuery("cat-dog")),
 		},
 		{
 			input: "watex~",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("watex").SetFuzziness(1)),
+				AddMust(bluge.NewMatchQuery("watex").SetFuzziness(1)),
 		},
 		{
 			input: "watex~2",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("watex").SetFuzziness(2)),
+				AddMust(bluge.NewMatchQuery("watex").SetFuzziness(2)),
 		},
 		{
 			input: "watex~ 2",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("watex").SetFuzziness(1)).
-				AddShould(bluge.NewBooleanQuery().SetMinShould(1).
+				AddMust(bluge.NewMatchQuery("watex").SetFuzziness(1)).
+				AddMust(bluge.NewBooleanQuery().SetMinShould(1).
 					AddShould(bluge.NewMatchQuery("2")).
 					AddShould(
 						bluge.NewNumericRangeInclusiveQuery(2.0, 2.0, true, true))),
 		},
 		{
-			input: "field:watex~",
+			input: "?field:watex~",
 			result: baseQuery().
 				AddShould(
 					bluge.NewMatchQuery("watex").
@@ -193,52 +193,52 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "field:watex~2",
 			result: baseQuery().
-				AddShould(bluge.NewMatchQuery("watex").SetFuzziness(2).SetField("field")),
+				AddMust(bluge.NewMatchQuery("watex").SetFuzziness(2).SetField("field")),
 		},
 		{
 			input: `field:555c3bb06f7a127cda000005`,
 			result: baseQuery().
-				AddShould(matchQuery("555c3bb06f7a127cda000005").SetField("field")),
+				AddMust(matchQuery("555c3bb06f7a127cda000005").SetField("field")),
 		},
 		{
 			input: `field:>5`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(5.0, bluge.MaxNumeric, false, true).
 						SetField("field")),
 		},
 		{
 			input: `field:>=5`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(5.0, bluge.MaxNumeric, true, true).
 						SetField("field")),
 		},
 		{
 			input: `field:<5`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, 5.0, true, false).
 						SetField("field")),
 		},
 		{
 			input: `field:<=5`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, 5.0, true, true).
 						SetField("field")),
 		},
 		{
 			input: `field:true`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(1.0, 1.0, true, true).
 						SetField("field")),
 		},
 		{
 			input: `field:false`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(0.0, 0.0, true, true).
 						SetField("field")),
 		},
@@ -246,7 +246,7 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: "field:-5",
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewBooleanQuery().SetMinShould(1).
 						AddShould(
 							bluge.NewMatchQuery("-5").SetField("field")).
@@ -257,72 +257,72 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `field:>-5`,
 			result: baseQuery().
-				AddShould(
+				AddMust(
 					bluge.NewNumericRangeInclusiveQuery(-5.0, bluge.MaxNumeric, false, true).
 						SetField("field")),
 		},
 		{
 			input: `field:>=-5`,
 			result: baseQuery().
-				AddShould(bluge.NewNumericRangeInclusiveQuery(-5.0, bluge.MaxNumeric, true, true).
+				AddMust(bluge.NewNumericRangeInclusiveQuery(-5.0, bluge.MaxNumeric, true, true).
 					SetField("field")),
 		},
 		{
 			input: `field:<-5`,
 			result: baseQuery().
-				AddShould(bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, -5.0, true, false).
+				AddMust(bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, -5.0, true, false).
 					SetField("field")),
 		},
 		{
 			input: `field:<=-5`,
 			result: baseQuery().
-				AddShould(bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, -5.0, true, true).
+				AddMust(bluge.NewNumericRangeInclusiveQuery(bluge.MinNumeric, -5.0, true, true).
 					SetField("field")),
 		},
 		{
 			input: `field:>"2006-01-02T15:04:05Z"`,
 			result: baseQuery().
-				AddShould(bluge.NewDateRangeInclusiveQuery(theDate, time.Time{}, false, true).
+				AddMust(bluge.NewDateRangeInclusiveQuery(theDate, time.Time{}, false, true).
 					SetField("field")),
 		},
 		{
 			input: `field:>="2006-01-02T15:04:05Z"`,
 			result: baseQuery().
-				AddShould(bluge.NewDateRangeInclusiveQuery(theDate, time.Time{}, true, true).
+				AddMust(bluge.NewDateRangeInclusiveQuery(theDate, time.Time{}, true, true).
 					SetField("field")),
 		},
 		{
 			input: `field:<"2006-01-02T15:04:05Z"`,
 			result: baseQuery().
-				AddShould(bluge.NewDateRangeInclusiveQuery(time.Time{}, theDate, true, false).
+				AddMust(bluge.NewDateRangeInclusiveQuery(time.Time{}, theDate, true, false).
 					SetField("field")),
 		},
 		{
 			input: `field:<="2006-01-02T15:04:05Z"`,
 			result: baseQuery().
-				AddShould(bluge.NewDateRangeInclusiveQuery(time.Time{}, theDate, true, true).
+				AddMust(bluge.NewDateRangeInclusiveQuery(time.Time{}, theDate, true, true).
 					SetField("field")),
 		},
 		{
 			input: `/mar.*ty/`,
 			result: baseQuery().
-				AddShould(bluge.NewRegexpQuery("mar.*ty")),
+				AddMust(bluge.NewRegexpQuery("mar.*ty")),
 		},
 		{
 			input: `name:/mar.*ty/`,
 			result: baseQuery().
-				AddShould(bluge.NewRegexpQuery("mar.*ty").
+				AddMust(bluge.NewRegexpQuery("mar.*ty").
 					SetField("name")),
 		},
 		{
 			input: `mart*`,
 			result: baseQuery().
-				AddShould(bluge.NewWildcardQuery("mart*")),
+				AddMust(bluge.NewWildcardQuery("mart*")),
 		},
 		{
 			input: `name:mart*`,
 			result: baseQuery().
-				AddShould(bluge.NewWildcardQuery("mart*").
+				AddMust(bluge.NewWildcardQuery("mart*").
 					SetField("name")),
 		},
 
@@ -332,56 +332,56 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `name\:marty`,
 			result: baseQuery().
-				AddShould(matchQuery("name:marty")),
+				AddMust(matchQuery("name:marty")),
 		},
 		// first colon delimiter, second escaped
 		{
 			input: `name:marty\:couchbase`,
 			result: baseQuery().
-				AddShould(matchQuery("marty:couchbase").
+				AddMust(matchQuery("marty:couchbase").
 					SetField("name")),
 		},
 		// escape space, single arguemnt to match query
 		{
 			input: `marty\ couchbase`,
 			result: baseQuery().
-				AddShould(matchQuery("marty couchbase")),
+				AddMust(matchQuery("marty couchbase")),
 		},
 		// escape leading plus, not a must clause
 		{
 			input: `\+marty`,
 			result: baseQuery().
-				AddShould(matchQuery("+marty")),
+				AddMust(matchQuery("+marty")),
 		},
 		// escape leading minus, not a must not clause
 		{
 			input: `\-marty`,
 			result: baseQuery().
-				AddShould(matchQuery("-marty")),
+				AddMust(matchQuery("-marty")),
 		},
 		// escape quote inside of phrase
 		{
 			input: `field:"what does \"quote\" mean"`,
 			result: baseQuery().
-				AddShould(bluge.NewMatchPhraseQuery(`what does "quote" mean`).SetField("field")),
+				AddMust(bluge.NewMatchPhraseQuery(`what does "quote" mean`).SetField("field")),
 		},
 		// escaping an unsupported character retains backslash
 		{
 			input: `can\ i\ escap\e`,
 			result: baseQuery().
-				AddShould(matchQuery(`can i escap\e`)),
+				AddMust(matchQuery(`can i escap\e`)),
 		},
 		// leading spaces
 		{
 			input: `   what`,
 			result: baseQuery().
-				AddShould(matchQuery(`what`)),
+				AddMust(matchQuery(`what`)),
 		},
 		// no boost value defaults to 1
 		{
 			input: `term^`,
 			result: baseQuery().
-				AddShould(matchQuery(`term`).
+				AddMust(matchQuery(`term`).
 					SetBoost(1.0)),
 		},
 		// weird lexer cases, something that starts like a number
@@ -389,25 +389,33 @@ func TestQuerySyntaxParserValid(t *testing.T) {
 		{
 			input: `3.0\:`,
 			result: baseQuery().
-				AddShould(matchQuery(`3.0:`)),
+				AddMust(matchQuery(`3.0:`)),
 		},
 		{
 			input: `3.0\a`,
 			result: baseQuery().
-				AddShould(matchQuery(`3.0\a`)),
+				AddMust(matchQuery(`3.0\a`)),
 		},
 		// implicit phrases
 		{
 			input: "animated scifi",
 			result: baseQuery().
-				AddShould(matchQuery("animated scifi")),
+				AddMust(matchQuery("animated scifi")),
 		},
 		{
 			input: "animated scifi Tag:test comedy movies",
-			result: baseQuery().AddShould(
+			result: baseQuery().AddMust(
 				matchQuery("animated scifi"),
 				matchQuery("test").SetField("Tag"),
 				matchQuery("comedy movies")),
+		},
+		{
+			input: "animated scifi ?Tag:test comedy movies",
+			result: baseQuery().AddMust(
+				matchQuery("animated scifi comedy movies"),
+			).AddShould(
+				matchQuery("test").SetField("Tag"),
+			),
 		},
 	}
 

@@ -11,10 +11,10 @@ s string
 n int
 f float64
 q bluge.Query
-pf *float64}
+pf *float64
+}
 
-%token tSTRING tPHRASE tPLUS tMINUS tCOLON tBOOST tNUMBER tSTRING tGREATER tLESS
-tEQUAL tTILDE
+%token tSTRING tPHRASE tPLUS tMINUS tCOLON tBOOST tNUMBER tGREATER tLESS tEQUAL tTILDE tQUESTION
 
 %type <s>                tSTRING
 %type <s>                tPHRASE
@@ -65,6 +65,11 @@ searchPrefix searchBase searchSuffix {
 
 searchPrefix:
 /* empty */ {
+	$$ = queryMust
+}
+|
+tQUESTION {
+	yylex.(*lexerWrapper).logDebugGrammarf("QUESTION")
 	$$ = queryShould
 }
 |

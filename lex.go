@@ -112,7 +112,7 @@ func startState(l *queryStringLex, next rune, eof bool) (lexState, bool) {
 	switch next {
 	case '"':
 		return inPhraseState, true
-	case '+', '-', ':', '>', '<', '=':
+	case '+', '-', ':', '>', '<', '=', '?':
 		l.buf += string(next)
 		return singleCharOpState, true
 	case '^':
@@ -172,6 +172,9 @@ func singleCharOpState(l *queryStringLex, next rune, eof bool) (lexState, bool) 
 	l.nextToken = &yySymType{}
 
 	switch l.buf {
+	case "?":
+		l.nextTokenType = tQUESTION
+		l.logDebugTokensf("QUESTION")
 	case "+":
 		l.nextTokenType = tPLUS
 		l.logDebugTokensf("PLUS")
